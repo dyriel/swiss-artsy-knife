@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+/*
+ * Design tokens, from the design system pass. Tailwind turns each one into
+ * utilities: --color-primary gives bg-primary / text-primary / border-primary,
+ * --text-headline-1 gives text-headline-1, --shadow-hard gives shadow-hard.
+ *
+ * Spacing uses Tailwind's default scale, which already matches the 8 px grid:
+ * 2 = 8 px, 4 = 16 px, 6 = 24 px, 10 = 40 px.
+ */
+@theme {
+  /* Colour */
+  --color-text: #343827;
+  --color-bg: #FBF8CD;
+  --color-surface: #FBF8CD;
+  --color-primary: #CB91CB;
+  --color-accent: #EA9EB6;
+  --color-success: #5A895E;
+  --color-on-success: #FBF8CD; /* light text on the darker green, for contrast */
+  --color-border: #000000;
+
+  /* Type: Space Grotesk for display, headlines and buttons; Plus Jakarta Sans for body */
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --text-display-lg: 48px;  /* Bold */
+  --text-display-md: 36px;  /* Medium */
+  --text-display-sm: 32px;  /* Regular */
+  --text-headline-1: 24px;  /* Bold */
+  --text-headline-2: 20px;  /* Bold */
+  --text-headline-3: 16px;  /* Bold */
+  --text-headline-4: 14px;  /* Bold */
+  --text-body-lg: 18px;
+  --text-body: 16px;
+  --text-small: 14px;
+
+  /* Button type sizes: Large 24, Medium 20, Small 16, Extra small 14 */
+  --text-btn-lg: 24px;
+  --text-btn-md: 20px;
+  --text-btn-sm: 16px;
+  --text-btn-xs: 14px;
+
+  /* Neobrutalism knobs: hard offset shadows, square corners */
+  --shadow-hard: 6px 6px 0 var(--color-border);
+  --shadow-hard-sm: 3px 3px 0 var(--color-border);
+  --radius-none: 0px;
+}
+
+@layer base {
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
