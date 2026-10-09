@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+
 const VARIANTS = {
   primary: { tile: 'bg-primary', icon: 'border-border' },
   accent: { tile: 'bg-accent', icon: 'border-border' },

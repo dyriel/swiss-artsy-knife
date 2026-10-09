@@ -2,17 +2,26 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import PaletteCard from '../components/PaletteCard.jsx'
 import ScreenTitle from '../components/ScreenTitle.jsx'
+import { ALERT_BOX } from '../lib/Ui.js'
 
-export default function SavedPalettes({ saved, onDelete }) {
+export default function SavedPalettes({ palettes }) {
+  const { saved, status, error, remove } = palettes
   const navigate = useNavigate()
   const [tag, setTag] = useState('all')
+  const [problem, setProblem] = useState('')
 
   const tags = [...new Set(saved.flatMap((p) => p.tags))].sort()
   const activeTag = tags.includes(tag) ? tag : 'all'
   const shown = activeTag === 'all' ? saved : saved.filter((p) => p.tags.includes(activeTag))
 
-  function confirmDelete(palette) {
-    if (window.confirm(`Delete "${palette.name}"? This cannot be undone.`)) onDelete(palette.id)
+  async function confirmDelete(palette) {
+    if (!window.confirm(`Delete "${palette.name}"? This cannot be undone.`)) return
+    setProblem('')
+    try {
+      await remove(palette.id)
+    } catch (e) {
+      setProblem(`Could not delete: ${e.message}`)
+    }
   }
 
   return (
@@ -36,11 +45,17 @@ export default function SavedPalettes({ saved, onDelete }) {
         )}
       </ScreenTitle>
 
-      {saved.length === 0 ? (
+      {problem && <p className={`${ALERT_BOX} mb-4`} role="alert">{problem}</p>}
+
+      {status === 'loading' ? (
+        <p className="text-body" role="status">Loading your palettes…</p>
+      ) : status === 'error' ? (
+        <p className={ALERT_BOX} role="alert">Could not load your palettes: {error}</p>
+      ) : saved.length === 0 ? (
         <p className="text-body">
           Nothing saved yet. Make a palette in{' '}
           <Link to="/palette" className="font-semibold underline">Palette Studio</Link> and press
-          Save. Palettes are kept in this browser only.
+          Save. Saved palettes are kept on your account.
         </p>
       ) : (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">

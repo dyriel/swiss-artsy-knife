@@ -1,21 +1,23 @@
 {
-  "name": "final-project-server",
+  "name": "swiss-artsy-knife-server",
   "private": true,
-  "version": "0.1.0",
   "type": "module",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node --env-file=.env --watch server.js",
-    "db:schema": "node --env-file=.env db/run.js db/schema.sql",
-    "db:seed": "node --env-file=.env db/run.js db/seed.sql",
-    "db:reset": "npm run db:schema && npm run db:seed"
-  },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.6"
+  },
+  "scripts": {
+    "dev": "node --watch --env-file=.env index.js",
+    "start": "node index.js",
+    "db:init": "node --env-file=.env db/run.js db/schema.sql",
+    "test": "node --test \"test/*.test.js\""
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "pg": "^8.13.1"
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0"
   }
 }

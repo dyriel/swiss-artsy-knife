@@ -7,7 +7,11 @@ import SavedPalettes from './pages/SavedPalettes.jsx'
 import BackgroundEraser from './pages/BackgroundEraser.jsx'
 import ZineLayout from './pages/ZineLayout.jsx'
 import QRGenerator from './pages/QRGenerator.jsx'
-import { useSavedPalettes } from './lib/Savedpalettes.js'
+import Login from './pages/Login.jsx'
+import Signup from './pages/Signup.jsx'
+import Profile from './pages/Profile.jsx'
+import { AuthProvider } from './lib/Auth.jsx'
+import { useSavedPalettes } from './lib/SavedPalettes.js'
 
 // The template's sightings demo is gone. What is kept from it is DemoNotice,
 // which shows a banner while VITE_USE_MOCK_API is not "false" and disappears
@@ -23,7 +27,7 @@ export default function App() {
   const { saved, add, remove } = useSavedPalettes()
 
   return (
-    <>
+    <AuthProvider>
       <Header />
       <DemoNotice />
       <Routes>
@@ -33,7 +37,9 @@ export default function App() {
         <Route path="/eraser" element={<BackgroundEraser />} />
         <Route path="/zine" element={<ZineLayout />} />
         <Route path="/qr" element={<QRGenerator />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
-    </>
+    </AuthProvider>
   )
 }

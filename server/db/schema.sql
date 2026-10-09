@@ -1,20 +1,30 @@
 -- The complete shape of the database. Safe to run against an empty database,
--- and safe to run twice.
+-- and safe to run twice (nothing here drops data).
 --
--- This file is committed on purpose. Your schema is a fact about your
--- application, not a runtime concern: it should be readable by opening a file
--- rather than by connecting to a server. It is also what lets you move to a
--- hosted database in one command.
+-- If you ran an older version of this file that had no username column, the
+-- users table already exists and will not be changed. On a LOCAL database with
+-- nothing you need, run this once first:  DROP TABLE palettes, users CASCADE;
 
-CREATE TABLE IF NOT EXISTS sightings (
-  id          SERIAL PRIMARY KEY,
-  place       TEXT        NOT NULL,
-  description TEXT        NOT NULL DEFAULT '',
-  spookiness  INTEGER     NOT NULL CHECK (spookiness BETWEEN 1 AND 5),
-  reported_at TIMESTAMPTZ NOT NULL DEFAULT now()
+CREATE TABLE IF NOT EXISTS users (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  email         TEXT        NOT NULL UNIQUE
+                            CHECK (email = lower(email) AND char_length(email) <= 254),
+  username      TEXT        NOT NULL CHECK (username ~ '^[A-Za-z0-9_]{3,24}$'),
+  password_hash TEXT        NOT NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- The list page always sorts newest first. Without this the database reads
--- every row and sorts it on each request.
-CREATE INDEX IF NOT EXISTS sightings_reported_at_idx
-  ON sightings (reported_at DESC);
+-- Usernames are unique ignoring case, so "Mia" and "mia" cannot both exist.
+CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_idx ON users (lower(username));
+
+CREATE TABLE IF NOT EXISTS palettes (
+  id         UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name       TEXT        NOT NULL CHECK (char_length(name) BETWEEN 1 AND 60),
+  colors     TEXT[]      NOT NULL CHECK (array_length(colors, 1) = 5),
+  tags       TEXT[]      NOT NULL DEFAULT '{}' CHECK (cardinality(tags) <= 8),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- The Saved screen lists one user's palettes, newest first.
+CREATE INDEX IF NOT EXISTS palettes_user_created_idx ON palettes (user_id, created_at DESC);

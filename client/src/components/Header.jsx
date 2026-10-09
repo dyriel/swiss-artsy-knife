@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Button from './Button.jsx'
+import ProfileMenu from './ProfileMenu.jsx'
+import { useAuth } from '../lib/Auth.jsx'
 import { TOOLS } from '../lib/Tools.js'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
   const closeDrawer = () => setOpen(false)
 
   return (
@@ -32,9 +35,23 @@ export default function Header() {
           ))}
         </nav>
 
-        <Button variant="accent" size="sm" onClick={() => navigate('/saved')}>
-          Saved
-        </Button>
+        {user ? (
+          <>
+            <Button variant="accent" size="sm" onClick={() => navigate('/saved')}>
+              Saved
+            </Button>
+            <ProfileMenu />
+          </>
+        ) : (
+          <>
+            <Button variant="primary" size="sm" onClick={() => navigate('/login')}>
+              Log in
+            </Button>
+            <Button className="hidden md:block" variant="accent" size="sm" onClick={() => navigate('/signup')}>
+              Sign up
+            </Button>
+          </>
+        )}
       </div>
 
       {open && (
@@ -50,9 +67,27 @@ export default function Header() {
               {tool.label}
             </Link>
           ))}
-          <Link to="/saved" onClick={closeDrawer}>
-            Saved
-          </Link>
+          {user ? (
+            <>
+              <Link to="/saved" onClick={closeDrawer}>Saved</Link>
+              <Link to="/profile" onClick={closeDrawer}>Profile ({user.username})</Link>
+              <button
+                type="button"
+                className="cursor-pointer p-4 text-left font-semibold"
+                onClick={() => {
+                  closeDrawer()
+                  logout()
+                }}
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={closeDrawer}>Log in</Link>
+              <Link to="/signup" onClick={closeDrawer}>Sign up</Link>
+            </>
+          )}
         </nav>
       )}
     </header>

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@imgly/background-removal": "^1.7.0",
+    "@supabase/supabase-js": "^2.117.3",
     "@tailwindcss/vite": "^4.3.3",
     "onnxruntime-web": "^1.21.0",
     "qrcode-generator": "^2.0.4",

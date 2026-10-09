@@ -14,7 +14,8 @@ import {
   makeSwatches,
   normalizeHex,
 } from '../lib/Palette.js'
-import { parseTags } from '../lib/Savedpalettes.js'
+import { useAuth } from '../lib/Auth.jsx'
+import { parseTags } from '../lib/SavedPalettes.js'
 
 const MAX_FILE_MB = 25
 const FIELD_LABEL = 'text-small font-semibold'
@@ -35,6 +36,7 @@ function startingHexes(state) {
 }
 
 export default function PaletteStudio({ onSave }) {
+  const { user } = useAuth()
   const location = useLocation()
   const [swatches, setSwatches] = useState(() => makeSwatches(startingHexes(location.state)))
   const [theme, setTheme] = useState('random')
@@ -44,6 +46,8 @@ export default function PaletteStudio({ onSave }) {
   const [tagsText, setTagsText] = useState('')
   const [notice, setNotice] = useState('')
   const [savedName, setSavedName] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const fileRef = useRef(null)
   const imageRef = useRef(null)
@@ -134,13 +138,22 @@ export default function PaletteStudio({ onSave }) {
     useImage(event.dataTransfer.files[0])
   }
 
-  function handleSave(event) {
+  async function handleSave(event) {
     event.preventDefault()
-    const item = onSave({ name, tags: parseTags(tagsText), colors: hexes })
-    setSavedName(item.name)
-    setName('')
-    setTagsText('')
-    setNotice('')
+    setSaving(true)
+    setSaveError('')
+    try {
+      const item = await onSave({ name, tags: parseTags(tagsText), colors: hexes })
+      setSavedName(item.name)
+      setName('')
+      setTagsText('')
+      setNotice('')
+    } catch (e) {
+      setSavedName('')
+      setSaveError(`Could not save: ${e.message}`)
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function handleExport() {
@@ -237,6 +250,7 @@ export default function PaletteStudio({ onSave }) {
         {notice}
       </p>
 
+      {user ? (
       <form
         onSubmit={handleSave}
         className="mt-4 border-3 border-border bg-surface p-4 shadow-hard"
@@ -266,8 +280,9 @@ export default function PaletteStudio({ onSave }) {
               onChange={(e) => setTagsText(e.target.value)}
             />
           </div>
-          <Button type="submit" variant="accent">Save</Button>
+          <Button type="submit" variant="accent" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
         </div>
+        {saveError && <p className="mt-3 text-small" role="alert">{saveError}</p>}
         {savedName && (
           <p className="mt-3 text-small" role="status">
             Saved &ldquo;{savedName}&rdquo;.{' '}
@@ -275,6 +290,21 @@ export default function PaletteStudio({ onSave }) {
           </p>
         )}
       </form>
+      ) : (
+        <section
+          className="mt-4 border-3 border-border bg-surface p-4 shadow-hard"
+          aria-labelledby="save-heading"
+        >
+          <h2 id="save-heading" className="mb-2 text-headline-3">Save this palette</h2>
+          <p className="text-body">
+            Saving is for registered users, so your palettes stay on your account.{' '}
+            <Link to="/login" state={{ from: '/palette' }} className="font-semibold underline">Log in</Link>
+            {' or '}
+            <Link to="/signup" state={{ from: '/palette' }} className="font-semibold underline">sign up</Link>
+            {' '}to save. Everything else here works without an account.
+          </p>
+        </section>
+      )}
     </main>
   )
 }
