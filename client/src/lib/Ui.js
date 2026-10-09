@@ -22,3 +22,5 @@ export const RANGE = `w-full accent-success ${FOCUS}`
 
 export const ALERT =
   'my-4 list-disc border-3 border-border bg-accent py-2 pl-10 pr-4 text-small'
+
+export const ALERT_BOX = 'border-3 border-border bg-accent px-4 py-2 text-small'
