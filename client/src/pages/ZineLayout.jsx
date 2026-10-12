@@ -13,7 +13,7 @@ import {
   pageCount,
   pageSizeMm,
   sheetPixels,
-} from '../lib/zineLayout.js'
+} from '../lib/ZineLayout.js'
 
 const SETTINGS_KEY = 'swiss-artsy-knife.zine-settings'
 const MAX_FILE_MB = 25
