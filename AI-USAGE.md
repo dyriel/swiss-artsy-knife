@@ -14,28 +14,28 @@ Tool: Claude
 What I asked for: Merge my existing Home page and Zine Layout into the class template, and finish the zine against the requirements.
 What it gave back: A repo layout, a rewritten ZineLayout.jsx and lib/zineLayout.js, 
 What I kept, what I changed, and why: I changed the layout of the old repo to match the template's. This is because I originally made a sample webapp so I had to 'transfer' what I already built to the template repo.
-Commit: https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
+Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
 04/10/2026 - Checking my folder structure against the documentation
 Tool: Claude
 What I asked for: Whether the project structure followed my documentation, and to adjust it if not.
 What it gave back: A comparison and a reorganised structure with components/, pages/ and lib/.
 What I kept, what I changed, and why: [your words]
-Commit: https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
+Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
 04/10/2026 - Palette Studio and saved palettes
 Tool: Claude
 What I asked for: The Palette Studio screen from my wireframe: five colours with locks, theme randomising, extraction from an image, and saving with a name and tags.
 What it gave back: lib/palette.js (colour maths, themes, k-means extraction), pages/PaletteStudio.jsx, pages/SavedPalettes.jsx and the saved-palette store.
 What I kept, what I changed, and why: [your words]
-Commit: https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
+Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
 04/10/2026 - Background Eraser, and API versus library
 Tool: Claude
 What I asked for: The Background Eraser screen from my wireframe, and whether an API would be easier for removing backgrounds.
 What it gave back: The advice that an in-browser library is easier than an API (no key, no quota, no image upload), plus lib/bgRemove.js with a Quick mode (edge flood-fill) and a Smart mode (@imgly/background-removal).
 What I kept, what I changed, and why: [your decision about the library and its AGPL licence, see section 2]
-Commit: https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
+Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
 04/10/2026 - QR Generator
 Tool: Claude
@@ -67,14 +67,7 @@ Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 - **What I did instead:** I pasted my main.jsx and the console error. The AI replaced it, with the router and the basename the GitHub Pages deploy needs. 
 - **Commit:** https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
-### Case 2 - Blank white page from a missing router
-
-- **What it gave me:** A new App.jsx using <Routes> and <Link>.
-- **What was wrong with it:** My template's main.jsx had no BrowserRouter and still imported ./styles.css, so the app showed a white screen. The AI changed one file without checking the entry file it depended on.
-- **What I did instead:** I pasted my main.jsx and the console error. The AI replaced it, with the router and the basename the GitHub Pages deploy needs.
-- **Commit:** https://github.com/YOUR-USERNAME/YOUR-REPO/commit/SHA
-
-### Case 3 - Code that imported things I did not have
+### Case 2 - Code that imported things I did not have
 
 - **What it gave me:** An App.jsx that imported ./pages/Home.jsx and react-router-dom.
 - **What was wrong with it:** The pages/ folder was missing on my machine and react-router-dom was not installed, so Vite failed with "Failed to resolve import". The AI did not tell me what to create or install.
@@ -86,18 +79,26 @@ Commit: https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 - **What it gave me:** Files that had different capitalizations when importing (i.e., one file had imports /lib/auth.jsx, while another file imports lib/Auth.jsx )
 - **What was wrong with it:** The app would not run because it couldn't import the correct files
 - **What I did instead:** I checked all the files to make sure the imports all had correct casing.
-- **Commit:** https://github.com/dyriel/swiss-artsy-knife/commit/
+- **Commit:** https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
 
 ## 3. Who wrote what
 
 ### Written by me
 
 - **File:** middleware/Auth.js, middleware/Errors.js, middleware/Validate.js
-- **Commit:**
-- **What it does and why it is built this way:**
+- **Commit:** https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
+- **What it does and why it is built this way:** validate.js enforces strict security boundaries by sanitizing and validating user inputs (such as regex-based email/username checks, password length/byte limits, and 6-character hex color validation) before any data touches the application logic or database.
+
+errors.js provides a custom HttpError class, a promise wrapper (wrap), and a centralized errorHandler middleware that ensures clients only receive clean, safe error messages while internal stack traces and database details remain safely in the server logs.
+
+auth.js handles JWT generation (signToken) and protects private endpoints via the requireAuth middleware by verifying tokens and attaching req.userId to downstream requests.
 
 ### The AI-written part I understand best
 
-- **File:**
-- **Commit:**
-- **What it does and why we kept it:**
+- **File:** client/src/QrCodeGenerator.jsx
+- **Commit:** https://github.com/dyriel/swiss-artsy-knife/commit/a432abe
+- **What it does and why we kept it:** What it does and why we kept it:
+
+It renders a live QR code preview based on user input text or links, allowing artists or users to instantly generate, customize, and export clean QR assets directly in the browser without server roundtrips.
+
+Why we kept it: It handles client-side canvas rendering and state updates smoothly. I understand how the input state hooks map directly into the rendering logic to update the QR code pattern in real time.
