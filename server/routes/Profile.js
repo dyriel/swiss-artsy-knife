@@ -3,7 +3,7 @@ import { Router } from 'express'
 import { HttpError, wrap } from '../middleware/Errors.js'
 import { requireAuth } from '../middleware/Auth.js'
 import { validatePasswordChange, validateUsernameChange } from '../middleware/Validate.js'
-import { COST } from './auth.js'
+import { COST } from './Auth.js'
 
 // The logged-in user's own account. There is no :id in these paths on purpose:
 // the user is always the one named by the token, so nobody can edit someone else.
